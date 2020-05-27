@@ -1,7 +1,53 @@
-/**
- * Implement Gatsby's Node APIs in this file.
- *
- * See: https://www.gatsbyjs.org/docs/node-apis/
- */
+const urlSlug = require("url-slug")
 
-// You can delete this file if you're not using it
+exports.createPages = async ({ actions, graphql, reporter }) => {
+  const resultados = await graphql(`
+    query {
+      allStrapiPaginas{
+        nodes{
+          id
+          nombre
+        }
+      }
+      allStrapiPropiedades {
+        nodes {
+          id
+          nombre
+        }
+      }
+    }
+  `);
+
+  if (resultados.errors) {
+    reporter.panic("No hubo resultados", resultados.errors)
+  }
+
+  const propiedades = resultados.data.allStrapiPropiedades.nodes
+  const paginas = resultados.data.allStrapiPaginas.nodes;
+
+
+
+  propiedades.forEach(propiedad => {
+    const url = urlSlug(propiedad.nombre);
+    actions.createPage({
+        path: url,
+        component: require.resolve('./src/components/propiedades.js'),
+        context:{
+          id:propiedad.id
+        }
+    })
+  });
+
+  paginas.forEach(pagina => {
+    const url = urlSlug(pagina.nombre);
+    actions.createPage({
+        path: url,
+        component: require.resolve('./src/components/paginas.js'),
+        context:{
+          id:pagina.id
+        }
+    })
+  });
+
+
+}

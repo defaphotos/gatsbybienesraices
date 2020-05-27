@@ -1,21 +1,54 @@
 import React from "react"
-import { Link } from "gatsby"
-
 import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
+import useInicio from "../hooks/useInicio"
+import { css } from "@emotion/core"
+import styled from "@emotion/styled"
+import BackgroundImage from "gatsby-background-image";
+import heroCSS from '../css/hero.module.css';
+import Encuentra from "../components/encuentra";
+import ListadoPropiedades from '../components/listadoPropiedades';
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
-  </Layout>
-)
+const ImagenBackground = styled(BackgroundImage)`
+  height: 600px;
+`;
+
+const IndexPage = () => {
+  const { nombre, contenido, imagen } = useInicio()
+
+  return (
+    <Layout>
+      <ImagenBackground
+        tag="section"
+        fluid={imagen.childImageSharp.fluid}
+        fadeIn="soft"
+      >
+
+        <div className={heroCSS.imagebg}>
+          <h1 className={heroCSS.titulo}>Venta de casa y departamentos exclusivos</h1>
+        </div>
+      </ImagenBackground>
+
+      <main>
+        <div
+          css={css`
+            max-width: 800px;
+            margin: 0 auto;
+          `}
+        >
+          <h1>{nombre}</h1>
+          <p
+            css={css`
+              text-align: center;
+            `}
+          >
+            {contenido}
+          </p>
+        </div>
+      </main>
+      <Encuentra /> 
+      <ListadoPropiedades />
+    </Layout>
+  )
+}
 
 export default IndexPage
